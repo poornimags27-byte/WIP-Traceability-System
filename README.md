@@ -21,11 +21,11 @@ A PHP + MySQL based manufacturing tracking application.
 
 ### Dashboard
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](dashboard.png)
 
 ### Edit Screen
 
-![Edit](screenshots/edit-screen.png)
+![Edit](edit-screen.png)
 
 ## Note
 
