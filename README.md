@@ -25,7 +25,7 @@ A PHP + MySQL based manufacturing tracking application.
 
 ### Edit Screen
 
-![Edit](edit-screen.png)
+![Edit](popup.png)
 
 ## Note
 
