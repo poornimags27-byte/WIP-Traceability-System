@@ -3,6 +3,6 @@
 .env
 .idea
 .vscode
-.config.php
+.config.sample.php
 *.zip
 *.rar
