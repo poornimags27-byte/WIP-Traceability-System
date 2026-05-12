@@ -1,0 +1,133 @@
+/* 🔹 GENERAL */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* 🔹 HEADER / FOOTER */
+header, footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1px 0;
+}
+
+/* 🔹 TABS */
+.tab-container {
+    display: flex;
+    justify-content: center;
+    background-color: #333;
+}
+
+.tablinks {
+    padding: 10px 20px;
+    background-color: inherit;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.tablinks:hover {
+    background-color: #575757;
+}
+
+.tablinks.active {
+    background-color: #007BFF;
+}
+
+.tabcontent {
+    display: none;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* 🔹 LAYOUT */
+.container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.form-section {
+    margin-bottom: 20px;
+}
+
+/* 🔹 INPUTS */
+input[type="text"] {
+    width: 90%;
+    padding: 5px;
+}
+
+/* 🔹 BUTTON */
+button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* 🔹 TABLE (COMMON) */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: left;
+}
+
+th {
+    background-color: #333;
+    color: white;
+}
+
+/* zebra */
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+/* hover */
+tr:hover {
+    background: #e6e6e6;
+    cursor: pointer;
+}
+
+/* 🔹 SELECTED ROW (POPUP + TABLE) */
+tr.active {
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+/* 🔹 POPUP MODAL */
+.lookup-modal {
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 30%;
+    width: 40%;
+    background: #fff;
+    padding: 15px;
+    border: 2px solid #333;
+    box-shadow: 0px 0px 10px gray;
+    z-index: 1000; /* 🔥 important */
+}
+
+/* 🔹 POPUP TABLE CONTAINER */
+#tableContainer {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 10px;
+}

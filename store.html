@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="popupstyle.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Store</h1>
+    </header>
+
+        <!-- Tabs -->
+    <div class="tab-container">
+        <button class="tablinks" onclick="openTab(event, 'Edit')"> Append </button>
+        <button class="tablinks" onclick="openTab(event, 'Help')">Help</button>
+    </div>
+
+            <!-- Edit Tab Content -->
+    <div id="Edit" class="tabcontent" style="display:block;">
+        <table>
+            <tr colspan="2">
+                <td style="width:15%;text-align: right;">ID</td>
+                <td style="width:35%"><input type="text" id="tnstoid" name="tnstoid" readonly></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;">Barcode</td>
+                <td><input type="text" id="tcbarcd" name="tcbarcd"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;">GRN Number</td>
+                <td><input type="text" id="tcgrnno" name="tcgrnno"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;">Item</td>
+                <td>
+                <input type="text" data-lookup="itm" data-field="nacitmid" id="tnitmid" onclick="openPopupFromElement(this)" onkeydown="handleKey(event, this)" autocomplete="off" style="width:50px">
+                <input type="text" data-field="cacitmcd" id="tcitmcd" style ="width:100px;text-align: center;" readonly>
+                <input type="text" data-field="cacitmnm" id="tcitmnm" style="width: 270px;" readonly> 
+                </td>
+            </tr> 
+
+            <tr>
+                <td style="text-align: right;">Quantity</td>
+                <td><input type="text" id="tnqty" name="tnqty" style="width: 100px;"></td>
+            </tr>          
+
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <button type="button" id="btnsave" name="btnsave" onclick="app.fnsave()">
+                        Save
+                    </button>
+                </td>
+            </tr>        
+        </table>
+    </div>
+
+
+<!-- 🔥 COMMON POPUP -->
+<div id="lookupPopup" class="lookup-modal active" style="display:none;">
+    <h4>Select Data</h4>
+
+    <input type="text" id="searchBox" onkeyup="loadPopupData()" placeholder="Search....">
+
+    <div id="tableContainer">
+        <table>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <button onclick="closePopup()">Close</button>
+</div>
+
+<script>
+const lookupMaster = {
+    itm: {
+        table: 'acitm',
+        col1: { key: 'nacitmid', label: 'ID' },
+        col2: { key: 'cacitmcd', label: 'Code' },
+        col3: { key: 'cacitmnm', label: 'Name' },
+        next: 'cacitmcd'
+    }
+};
+
+var app = {
+
+    mode: "add",
+
+    init: function () {
+        //this.focusBarcode();
+    },
+
+   /* focusBarcode: function () {
+        let input = document.getElementById("tcbarcd");
+        if (!input) return;
+
+        input.focus();
+        input.select();
+    }, */
+
+    fnsave: function () {
+        const id = document.getElementById("tnstoid").value;
+        const barcode = document.getElementById("tcbarcd").value;
+        const grn = document.getElementById("tcgrnno").value;
+        const itmid = document.getElementById("tnitmid").value;
+        const tnqty = document.getElementById("tnqty").value;
+
+        if (!barcode || !grn || !itmid) {
+            alert("Please fill all fields");
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("query", 4);
+        formData.append("barcode", barcode);
+        formData.append("grn", grn);
+        formData.append("itmid", itmid);
+        formData.append("qty", tnqty);
+
+        if (this.mode === "edit" && id) {
+            formData.append("id", id);
+        }
+
+        fetch("store.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(res => {
+        if (res.status === "Inserted") {
+                alert("Inserted");
+            } else {
+                alert("Saved");
+            }
+
+        this.clearForm(); // 🔥 ALWAYS clear
+
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error saving data");
+        });
+    },
+
+    clearForm: function () {
+        document.getElementById("tnstoid").value = "";
+        document.getElementById("tcbarcd").value = "";
+        document.getElementById("tcgrnno").value = "";
+        document.getElementById("tnitmid").value = "";
+        document.getElementById("tcitmcd").value = "";
+        document.getElementById("tcitmnm").value = "";
+        document.getElementById("tnqty").value   = "";
+
+        document.getElementById("tcbarcd").focus();
+
+        //this.focusBarcode();
+    }
+};
+
+window.onload = function () {
+    app.init();
+};
+</script>
+
+<script src="popup.js"></script>
+
+</body>
+</html>

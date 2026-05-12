@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Master</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Item Master</h1>
+    </header>
+
+    <!-- Tabs -->
+    <div class="tab-container">
+        <button class="tablinks active" onclick="goToList()">List</button>
+        <button id="editTabBtn" class="tablinks" onclick="addNew()">Append</button>
+        <button class="tablinks" onclick="openTab(event, 'Help')">Help</button>
+    </div>
+
+        <!-- Tab 1: Data Table -->
+    <div id="List" class="tabcontent active" style="display:block;">
+        <input type="text" id="itemid" placeholder="Enter Item ID">
+        <button onclick="searchItem()">Search Item</button>
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Code</th>
+                    <th>Item</th>      
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be inserted here dynamically -->
+            </tbody>
+        </table>
+        <div class="pagination-controls">
+            <button onclick="firstPage()">⏮ First</button>
+            <button onclick="prevPage()">⏪ Page Up</button>
+            <button onclick="nextPage()">⏩ Page Down</button>
+            <button onclick="lastPage()">⏭ Last</button>
+            <button onclick="rowUp()">⬆ Row Up</button>
+            <button onclick="rowDown()">⬇ Row Down</button>
+        </div>       
+    </div>
+
+        <!-- Edit Tab Content -->
+    <div id="Edit" class="tabcontent" style="display:none;">
+        <table>
+            <tr colspan="2">
+                <td style="width:45%;text-align: right;">ID</td>
+                <td style="width:55%"><input type="text" id="tnitmid" name="tnitmid" readonly></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;">Item Code</td>
+                <td><input type="text" id="tcitmcd" name="tcitmcd"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;">Item Name</td>
+                <td><input type="text" id="tcitmnm" name="tcitmnm"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;">
+                    <button type="button" id="btnlist" name="btnlist" style="text-align: right;" onclick="dataApp.loadPage(1); openTab(null,'List')">
+                        List
+                    </button>
+                </td>
+                <td style="text-align: left;">
+                    <button type="button" id="btnsave" name="btnsave" style="text-align: left;" onclick="dataApp.fnsave()">
+                        Save
+                    </button>
+                </td>
+            </tr>        
+        </table>
+    </div>
+
+<script src="data.js"></script>
+<script src="libb.js"></script>
+
+</body>
+</html>

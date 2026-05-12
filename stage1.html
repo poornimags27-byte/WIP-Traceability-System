@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="popupstyle.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Store</h1>
+    </header>
+
+        <!-- Tabs -->
+    <div class="tab-container">
+        <button class="tablinks" onclick="openTab(event, 'Edit')"> Append </button>
+        <button class="tablinks" onclick="openTab(event, 'Help')">Help</button>
+    </div>
+
+            <!-- Edit Tab Content -->
+    <div id="Edit" class="tabcontent" style="display:block;">
+        <table>
+            <tr colspan="2">
+                <td style="width:15%;text-align: right;">ID</td>
+                <td style="width:35%"><input type="text" id="tnstoid" name="tnstoid" readonly></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;">Item</td>
+                <td>
+                <input type="text" data-lookup="itm" data-field="nacitmid" id="tnitmid" onclick="openPopupFromElement(this)" onkeydown="handleKey(event, this)" autocomplete="off" style="width:50px">
+                <input type="text" data-field="cacitmcd" id="tcitmcd" style ="width:100px;text-align: center;" readonly>
+                <input type="text" data-field="cacitmnm" id="tcitmnm" style="width: 270px;" readonly> 
+                </td>
+            </tr> 
+
+            <tr>
+                <td style="text-align: right;">Status</td>
+                <td>
+                    <select id="tcstat" name="tcstat">
+                        <option value="">Select</option>
+                        <option value="P">Pending</option>
+                        <option value="R">Received</option>
+                        <option value="I">In Progress</option>
+                        <option value="Q">Quality Check</option>
+                        <option value="C">Completed</option>
+                    </select>
+                </td>
+            </tr>
+
+<tr>
+    <td colspan="2">
+
+        <div style="height:300px; overflow-y:auto; border:1px solid #ccc; margin-top:10px;">
+
+            <table border="1" width="100%" cellpadding="5" cellspacing="0">
+
+                <thead style="position:sticky; top:0; background:#f1f1f1;">
+                    <tr>
+                        <th style="width:20%">GRN No</th>
+                        <th style="width:32%">Barcode</th>
+                        <th style="width:15%">Qty</th>
+                        <th style="width:15%">Issue Qty</th>
+                        <th style="width:8%">ID</th>
+                    </tr>
+                </thead>
+
+                <tbody id="transactionBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </td>
+</tr>
+
+<tr>
+    <td colspan="2" style="text-align:center; padding-top:10px;">
+        <button type="button" id="btnsave" name="btnsave" onclick="app.fnsave()">
+            Save
+        </button>
+    </td>
+</tr>
+
+<script>
+
+let tbody = document.getElementById("transactionBody");
+
+for (let i = 1; i <= 50; i++) {
+
+    tbody.innerHTML += `
+        <tr>
+            <td>
+                <input type="text"
+                       id="grnno${i}"
+                       data-lookup="grn"
+                       onclick="openPopupFromElement(this)"
+                       onkeydown="handleKey(event, this)"
+                       autocomplete="off"
+                       style="width:95%;">
+            </td>
+
+            <td>
+                <input type="text"
+                       id="barcode${i}"
+                       readonly
+                       style="width:98%;">
+            </td>
+
+            <td>
+                <input type="number"
+                       id="qty${i}"
+                       readonly
+                       style="width:90%; text-align:right;">
+            </td>
+
+            <td>
+                <input type="number"
+                       id="issueqty${i}"
+                       min="0"
+                       style="width:90%; text-align:right;">
+            </td>
+
+            
+            <td>
+                <input type="text"
+                       id="trnid${i}"
+                       readonly
+                       style="width:95%; text-align:center;">
+            </td>
+        </tr>
+    `;
+}
+
+</script>        
+        </table>
+    </div>
+
+
+<!-- 🔥 COMMON POPUP -->
+<div id="lookupPopup" class="lookup-modal active" style="display:none;">
+    <h4>Select Data</h4>
+
+    <input type="text" id="searchBox" onkeyup="loadPopupData()" placeholder="Search....">
+
+    <div id="tableContainer">
+        <table>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <button onclick="closePopup()">Close</button>
+</div>
+
+<script>
+const lookupMaster = {
+    itm: {
+        table: 'acitm',
+        col1: { key: 'nacitmid', label: 'ID' },
+        col2: { key: 'cacitmcd', label: 'Code' },
+        col3: { key: 'cacitmnm', label: 'Name' },
+        next: 'cacitmcd'
+    },
+
+    grn: {
+        table: 'acsto',
+
+        // 🔥 filter using selected item
+        filterField: 'nacstitmid',
+        filterValue: () => document.getElementById("tnitmid").value,
+
+        col1: { key: 'cacstgrnno', label: 'GRN No' },
+        col2: { key: 'cacstbarcd', label: 'Barcode' },
+        col3: { key: 'nacstqty', label: 'Qty' },
+
+        next: 'cacstgrnno'
+    }
+};
+
+
+
+var app = {
+
+    mode: "add",
+
+    init: function () {
+        //this.focusBarcode();
+    },
+
+   /* focusBarcode: function () {
+        let input = document.getElementById("tcbarcd");
+        if (!input) return;
+
+        input.focus();
+        input.select();
+    }, */
+
+    fnsave: function () {
+        const id = document.getElementById("tnstoid").value;
+        const itmid = document.getElementById("tnitmid").value;
+
+        if (!itmid) {
+            alert("Please fill all fields");
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("query", 4);
+        formData.append("itmid", itmid);
+
+        if (this.mode === "edit" && id) {
+            formData.append("id", id);
+        }
+
+        fetch("stage1.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(res => {
+        if (res.status === "Inserted") {
+                alert("Inserted");
+            } else {
+                alert("Saved");
+            }
+
+        this.clearForm(); // 🔥 ALWAYS clear
+
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error saving data");
+        });
+    },
+
+    clearForm: function () {
+        document.getElementById("tnstoid").value = "";
+        document.getElementById("tnitmid").value = "";
+        document.getElementById("tcitmcd").value = "";
+        document.getElementById("tcitmnm").value = "";
+
+        document.getElementById("tnitmid").focus();
+
+        //this.focusBarcode();
+    }
+};
+
+window.onload = function () {
+    app.init();
+};
+</script>
+
+<script src="popup.js"></script>
+
+</body>
+</html>
